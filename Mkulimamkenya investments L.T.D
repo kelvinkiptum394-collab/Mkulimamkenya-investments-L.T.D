@@ -329,7 +329,6 @@ Home
 <i class="fa-solid fa-wallet"></i>
 Investments
 </div>
-
 <div>
 <i class="fa-solid fa-money-bill-wave"></i>
 Withdraw
@@ -361,3 +360,342 @@ alert('STK Push request prepared. Connect backend API to complete payment.');
 
 </body>
 </html>
+// server.js
+
+require('dotenv').config();
+
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+
+const app = express();
+
+app.use(express.json());
+app.use(cors());
+
+const PORT = 5000;
+
+
+/* =========================
+   YOUR MPESA CREDENTIALS
+========================= */
+
+const CONSUMER_KEY =
+'gjIGVB8OA3A1VRW8DsTeqZg1ZXlHIXIPHD3XY3abEybjoDYO';
+
+const CONSUMER_SECRET =
+'JglAaooKcYFQg04e1WvAFOwMcCGRWeRZTi0A5wU780eVJLeEMKdUJHW1IAGC1b5h';
+
+const SHORTCODE = '4498280';
+
+const PASSKEY =
+'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
+
+const CALLBACK_URL =
+'https://YOUR-NGROK-URL.ngrok-free.app/callback';
+
+
+/* =========================
+   FORMAT PHONE
+========================= */
+
+function formatPhone(phone){
+
+phone = phone.replace(/\s+/g,'');
+
+if(phone.startsWith('0')){
+return '254' + phone.substring(1);
+}
+
+if(phone.startsWith('+254')){
+return phone.replace('+','');
+}
+
+return phone;
+
+}
+
+
+/* =========================
+   ACCESS TOKEN
+========================= */
+
+async function getAccessToken(){
+
+const auth = Buffer.from(
+`${CONSUMER_KEY}:${CONSUMER_SECRET}`
+).toString('base64');
+
+const response = await axios.get(
+'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
+{
+headers:{
+Authorization:`Basic ${auth}`
+}
+}
+);
+
+return response.data.access_token;
+
+}
+
+
+/* =========================
+   STK PUSH
+========================= */
+
+app.post('/stkpush', async(req,res)=>{
+
+try{
+
+let {phone,amount} = req.body;
+
+phone = formatPhone(phone);
+
+const token = await getAccessToken();
+
+const timestamp = new Date()
+.toISOString()
+.replace(/[-:TZ.]/g,'')
+.slice(0,14);
+
+const password = Buffer.from(
+SHORTCODE +
+PASSKEY +
+timestamp
+).toString('base64');
+
+const response = await axios.post(
+'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
+{
+BusinessShortCode:SHORTCODE,
+Password:password,
+Timestamp:timestamp,
+TransactionType:'CustomerPayBillOnline',
+Amount:amount,
+PartyA:phone,
+PartyB:SHORTCODE,
+PhoneNumber:phone,
+CallBackURL:CALLBACK_URL,
+AccountReference:'InvestPro',
+TransactionDesc:'Investment Payment'
+},
+{
+headers:{
+Authorization:`Bearer ${token}`
+}
+}
+);
+
+res.json(response.data);
+
+}catch(error){
+
+console.log(
+error.response?.data || error.message
+);
+
+res.status(500).json({
+error:'STK Push failed'
+});
+
+}
+
+});
+
+
+/* =========================
+   CALLBACK
+========================= */
+
+app.post('/callback',(req,res)=>{
+
+console.log(
+'========= CALLBACK ========='
+);
+
+console.log(
+JSON.stringify(req.body,null,2)
+);
+
+res.json({
+ResultCode:0,
+ResultDesc:'Accepted'
+});
+
+});
+
+
+/* =========================
+   TEST PAGE
+========================= */
+
+app.get('/',(req,res)=>{
+
+res.send(`
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<title>InvestPro Kenya</title>
+
+<meta name="viewport"
+content="width=device-width,initial-scale=1.0">
+
+<style>
+
+body{
+font-family:Arial;
+background:#f4f5f7;
+padding:30px;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:20px;
+max-width:400px;
+margin:auto;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:15px;
+margin-top:15px;
+border-radius:10px;
+border:1px solid #ccc;
+font-size:18px;
+}
+
+button{
+width:100%;
+padding:15px;
+margin-top:20px;
+border:none;
+border-radius:10px;
+background:#16a34a;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+h1{
+text-align:center;
+color:#16a34a;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>InvestPro Kenya</h1>
+
+<input
+type="text"
+id="phone"
+placeholder="07XXXXXXXX">
+
+<input
+type="number"
+id="amount"
+placeholder="Amount">
+
+<button onclick="payNow()">
+Deposit via M-Pesa
+</button>
+
+</div>
+
+<script>
+
+async function payNow(){
+
+const phone =
+document.getElementById('phone').value;
+
+const amount =
+document.getElementById('amount').value;
+
+if(!phone || !amount){
+
+alert('Enter phone and amount');
+
+return;
+
+}
+
+try{
+
+const response = await fetch(
+'/stkpush',
+{
+method:'POST',
+headers:{
+'Content-Type':'application/json'
+},
+body:JSON.stringify({
+phone,
+amount
+})
+}
+);
+
+const data = await response.json();
+
+console.log(data);
+
+if(data.ResponseCode === "0"){
+
+alert(
+'STK Push sent successfully. Check your phone.'
+);
+
+}else{
+
+alert(
+'Failed: ' +
+(data.ResponseDescription || 'Unknown error')
+);
+
+}
+
+}catch(error){
+
+console.log(error);
+
+alert('Server error');
+
+}
+
+}
+
+</script>
+
+</body>
+
+</html>
+
+`);
+
+});
+
+
+/* =========================
+   START SERVER
+========================= */
+
+app.listen(PORT,()=>{
+
+console.log(
+'Server running on http://localhost:5000'
+);
+
+});
