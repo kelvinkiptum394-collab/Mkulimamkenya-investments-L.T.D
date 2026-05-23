@@ -1,158 +1,120 @@
-Join the most profitable company in Kenya 
-<div class="cards">
+Join the most profitable company in Kenya Trusted wuth more than million kenyans 
+<script>
 
-<div class="card">
-<h3>KSh 750</h3>
-<div class="profit" style="color:#16a34a;">+KSh 112.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+// INVEST BUTTONS
+const investButtons = document.querySelectorAll('.buy-btn');
 
-<div class="card">
-<h3>KSh 1300</h3>
-<div class="profit" style="color:#16a34a;">+KSh 195/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+investButtons.forEach(button => {
 
-<div class="card">
-<h3>KSh 1850</h3>
-<div class="profit" style="color:#16a34a;">+KSh 277.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+button.addEventListener('click', () => {
 
-<div class="card">
-<h3>KSh 2400</h3>
-<div class="profit" style="color:#16a34a;">+KSh 360/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+const amount =
+button.parentElement.querySelector('h3').innerText;
 
-<div class="card">
-<h3>KSh 2950</h3>
-<div class="profit" style="color:#16a34a;">+KSh 442.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+showPaymentOptions(amount);
 
-<div class="card">
-<h3>KSh 3500</h3>
-<div class="profit" style="color:#16a34a;">+KSh 525/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+});
 
-<div class="card">
-<h3>KSh 4050</h3>
-<div class="profit" style="color:#16a34a;">+KSh 607.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+});
 
-<div class="card">
-<h3>KSh 4600</h3>
-<div class="profit" style="color:#16a34a;">+KSh 690/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
 
-<div class="card">
-<h3>KSh 5150</h3>
-<div class="profit" style="color:#16a34a;">+KSh 772.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+// PAYMENT OPTIONS
+function showPaymentOptions(amount){
 
-<div class="card">
-<h3>KSh 5700</h3>
-<div class="profit" style="color:#16a34a;">+KSh 855/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+const choice = confirm(
+`You selected ${amount} investment.\n\nPress OK for M-Pesa Payment\nPress Cancel for WhatsApp Support`
+);
 
-<div class="card">
-<h3>KSh 6250</h3>
-<div class="profit" style="color:#16a34a;">+KSh 937.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+if(choice){
 
-<div class="card">
-<h3>KSh 6800</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1020/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+document.getElementById('amount').value =
+amount.replace('KSh ','').replace(',','');
 
-<div class="card">
-<h3>KSh 7350</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1102.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+window.scrollTo({
+top:document.body.scrollHeight,
+behavior:'smooth'
+});
 
-<div class="card">
-<h3>KSh 7900</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1185/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+alert('Enter phone number then click Deposit via M-Pesa');
 
-<div class="card">
-<h3>KSh 8450</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1267.5/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+}else{
 
-<div class="card">
-<h3>KSh 9000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1350/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+window.open(
+'https://wa.me/254753608376?text=Hello%20InvestPro,%20I%20need%20help%20with%20investment%20payment.',
+'_blank'
+);
 
-<div class="card">
-<h3>KSh 10000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1500/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+}
 
-<div class="card">
-<h3>KSh 12500</h3>
-<div class="profit" style="color:#16a34a;">+KSh 1875/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+}
 
-<div class="card">
-<h3>KSh 15000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 2250/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
 
-<div class="card">
-<h3>KSh 20000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 3000/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+// M-PESA DEPOSIT
+async function payNow(){
 
-<div class="card">
-<h3>KSh 25000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 3750/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+const phone =
+document.getElementById('phone').value;
 
-<div class="card">
-<h3>KSh 30000</h3>
-<div class="profit" style="color:#16a34a;">+KSh 4500/day</div>
-<p>15% daily</p>
-<button class="buy-btn">Invest Now</button>
-</div>
+const amount =
+document.getElementById('amount').value;
 
-</div>
+if(!phone || !amount){
+
+alert('Please enter phone number and amount'); look
+
+return;
+
+}
+
+if(phone.length < 10){
+
+alert('Enter valid phone number');
+
+return;
+
+}
+
+alert(
+`STK Push sent to ${phone} for KSh ${amount}.\n\nComplete payment on your phone.`
+);
+
+// CONNECT YOUR BACKEND API HERE
+
+}
+
+
+// WITHDRAWAL BUTTON
+function withdrawMoney(){
+
+const amount = prompt('Enter withdrawal amount');
+
+if(!amount){
+
+alert('Withdrawal cancelled');
+
+return;
+
+}
+
+alert(
+`Withdrawal request for KSh ${amount} submitted successfully.`
+);
+
+}
+
+
+// SUPPORT BUTTON
+function contactSupport(){
+
+alert(
+'Support Team:\n\nWhatsApp: 0753608376\nAvailable 24/7'
+);
+
+window.open(
+'https://wa.me/254753608376',
+'_blank'
+);
+
+}
+
+</script>
